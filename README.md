@@ -38,7 +38,26 @@ public class MyApp {
 }
 
 
+public interface GitHub {
+  
+  @RequestLine("GET /repos/{owner}/{repo}/contributors")
+  List<Contributor> contributors(@Param("owner") String owner, @Param("repo") String repository);
+  
+  class Contributor {
+    String login;
+    int contributions;
+  }
+}
 
+public class MyApp {
+  public static void main(String[] args) {
+    GitHub github = Feign.builder()
+      .decoder(new GsonDecoder())
+      .target(GitHub.class, "https://api.github.com");
+      
+    github.contributors("OpenFeign", "feign");
+  }
+}
 
 
 
